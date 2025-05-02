@@ -1,0 +1,33 @@
+#include <CurieTime.h>
+
+#define LAMP_PIN 9
+
+void setup() {
+  pinMode(LAMP_PIN, OUTPUT);
+  Serial.begin(9600);
+
+  // Inisialisasi waktu (hh, mm, ss, dd, mm, yyyy)
+  // Set hanya SEKALI, lalu bisa dilepas dari power jika pakai backup battery RTC
+  setTime(18, 0, 0, 1, 5, 2025);  // Set jam ke 18:00, 1 Mei 2025
+}
+
+void loop() {
+  int hourNow = hour();
+
+  // Cek apakah sekarang antara jam 18:00 hingga 23:59, atau 00:00 hingga 05:59
+  if (hourNow >= 18 || hourNow < 6) {
+    digitalWrite(LAMP_PIN, HIGH);  // Nyalakan lampu
+  } else {
+    digitalWrite(LAMP_PIN, LOW);   // Matikan lampu
+  }
+
+  // Debug waktu sekarang
+  Serial.print("Time: ");
+  Serial.print(hour());
+  Serial.print(":");
+  Serial.print(minute());
+  Serial.print(":");
+  Serial.println(second());
+
+  delay(1000);
+}
