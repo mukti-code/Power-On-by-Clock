@@ -1,0 +1,46 @@
+#include <Wire.h>
+#include "RTClib.h"
+
+#define LAMP_PIN 9
+
+RTC_DS3231 rtc;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(LAMP_PIN, OUTPUT);
+
+  if (!rtc.begin()) {
+    Serial.println("RTC tidak terdeteksi!");
+    while (1);
+  }
+
+  // Set waktu hanya sekali, lalu beri komentar
+  // rtc.adjust(DateTime(2025, 5, 1, 17, 59, 0)); // Tahun, Bulan, Hari, Jam, Menit, Detik
+
+  if (rtc.lostPower()) {
+    Serial.println("RTC baru nyala / kehilangan daya. Atur waktu ulang.");
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // Set otomatis sesuai waktu kompilasi
+  }
+}
+
+void loop() {
+  DateTime now = rtc.now();
+  int currentHour = now.hour();
+
+  // Debug: tampilkan waktu sekarang
+  Serial.print("Sekarang: ");
+  Serial.print(now.hour());
+  Serial.print(":");
+  Serial.print(now.minute());
+  Serial.print(":");
+  Serial.println(now.second());
+
+  // Nyalakan lampu dari jam 18:00 sampai 06:00
+  if (currentHour >= 18 || currentHour < 6) {
+    digitalWrite(LAMP_PIN, HIGH);
+  } else {
+    digitalWrite(LAMP_PIN, LOW);
+  }
+
+  delay(1000);
+}
