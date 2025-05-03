@@ -1,0 +1,35 @@
+#include <CurieTime.h>
+
+#define LAMP_PIN 9
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(LAMP_PIN, OUTPUT);
+
+  // Set waktu hanya SEKALI (bisa dikomentari setelah diset)
+  // Format: setTime(hour, minute, second, day, month, year)
+  setTime(18, 0, 0, 1, 5, 2025);  // Misalnya: 1 Mei 2025, pukul 18:00
+}
+
+void loop() {
+  int h = hour();
+  int m = minute();
+
+  Serial.print("Waktu: ");
+  Serial.print(h);
+  Serial.print(":");
+  Serial.println(m);
+
+  // Kondisi nyala:
+  // 18:05 - 18:09 dan 18:20 - 18:24
+  bool isOnPeriod1 = (h == 18 && m >= 5 && m < 10);
+  bool isOnPeriod2 = (h == 18 && m >= 20 && m < 25);
+
+  if (isOnPeriod1 || isOnPeriod2) {
+    digitalWrite(LAMP_PIN, HIGH);
+  } else {
+    digitalWrite(LAMP_PIN, LOW);
+  }
+
+  delay(1000);
+}
